@@ -1,7 +1,9 @@
 function onclick(info, tab) {
     var uri = info.linkUrl || info.pageUrl;
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "https://urlify.cn/chrome/extension?url=" + uri, true);
+    xhr.open("POST", "https://urlify.cn/chrome/extension", true);
+    data = new FormData();
+    data.append("url", uri);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
             var copyFrom = document.createElement("textarea");
@@ -14,7 +16,7 @@ function onclick(info, tab) {
             alert("已经复制短链接到剪切板");
         }
     }
-    xhr.send();
+    xhr.send(data);
 }
 chrome.contextMenus.create({
     "title": "转换选中链接为短链接",
