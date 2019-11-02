@@ -1,7 +1,7 @@
 {
     "name": "Urlify 短链接工具",
     "description": "快速生成短连接工具",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "permissions": ["contextMenus", "https://urlify.cn/"],
     "background":
     {
