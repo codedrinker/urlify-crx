@@ -1,31 +1,66 @@
-function onclick(info, tab) {
-    var uri = info.linkUrl || info.pageUrl;
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://urlify.cn/chrome/extension", true);
-    data = new FormData();
-    data.append("url", uri);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-            var copyFrom = document.createElement("textarea");
-            copyFrom.textContent = xhr.responseText;
-            var body = document.getElementsByTagName('body')[0];
-            body.appendChild(copyFrom);
-            copyFrom.select();
-            document.execCommand('copy');
-            body.removeChild(copyFrom);
-            alert("已经复制短链接到剪切板");
-        }
-    }
-    xhr.send(data);
-}
-chrome.contextMenus.create({
-    "title": "转换选中链接为短链接",
-    "contexts": ["link"],
-    "onclick": onclick
+injectElement();
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log(request);
+    showUrlifyMessage(request);
 });
 
-chrome.contextMenus.create({
-    "title": "转换当前页面为短链接",
-    "contexts": ["page"],
-    "onclick": onclick
-});
+function injectElement() {
+    var urlifyContainer = document.createElement('div');
+    urlifyContainer.id = "urlify-alert-id";
+    urlifyContainer.className = "urlify-container";
+
+    var urlifyAlert = document.createElement('div');
+    urlifyAlert.className = "urlify-alert";
+
+    urlifyContainer.appendChild(urlifyAlert);
+    document.body.appendChild(urlifyContainer);
+}
+
+function showUrlifyMessage(message) {
+    var target = document.getElementById("urlify-alert-id");
+    if (!message) {
+        target.children[0].style.backgroundColor = "#81C784";
+        target.children[0].textContent = "生成短链接成功并复制到剪切板";
+    } else {
+        target.children[0].style.backgroundColor = "#E57373";
+        target.children[0].textContent = message || "获取短链接失败请检查网络并重试";
+    }
+    urlifyFadeIn(target, 10);
+    setTimeout(function() { urlifyFadeOut(target, 50) }, 1000);
+}
+
+function setUrlifyOpacity(elem, opacity) {
+    if (elem.style.filter) { //IE
+        elem.style.filter = 'alpha(opacity:' + opacity * 100 + ')';
+    } else {
+        elem.style.opacity = opacity;
+    }
+}
+
+function urlifyFadeIn(elem, speed) {
+    elem.style.display = "block";
+    setUrlifyOpacity(elem, 0);
+
+    var tempOpacity = 0;
+    (function() {
+        setUrlifyOpacity(elem, tempOpacity);
+        tempOpacity += 0.05;
+        if (tempOpacity <= 1) {
+            setTimeout(arguments.callee, speed);
+        }
+    })();
+}
+
+function urlifyFadeOut(elem, speed) {
+    elem.style.display = "block";
+    var tempOpacity = 1;
+    (function() {
+        setUrlifyOpacity(elem, tempOpacity);
+        tempOpacity -= 0.05;
+        if (tempOpacity > 0) {
+            setTimeout(arguments.callee, speed);
+        } else {
+            elem.style.display = "none"; //不可放在匿名函数外面会先执行。
+        }
+    })();
+}
