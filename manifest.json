@@ -1,7 +1,7 @@
 {
     "name": "Urlify 短链接工具",
     "description": "快速生成短连接工具",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "permissions": [
         "contextMenus",
         "tabs",
@@ -20,7 +20,8 @@
             "urlify.css"
         ],
         "js": [
-            "urlify.js"
+            "urlify.js",
+            "qrcode.min.js"
         ],
         "matches": [
             "http://*/*",

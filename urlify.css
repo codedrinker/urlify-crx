@@ -18,3 +18,27 @@
     opacity: 1;
     transition: opacity 0.4s;
 }
+
+
+.urlify-qrcode {
+    z-index: 2000;
+    display: none;
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 125px;
+    text-align: center;
+}
+
+.urlify-close {
+    position: relative;
+    font-size: 12px !important;
+    background-color: lightgray !important;
+    top: 0px !important;
+    right: 0px !important;
+    margin-left: 125px !important;
+    height: 15px !important;
+    width: 15px !important;
+    padding: 0px !important;
+    color: #000 !important;
+}
